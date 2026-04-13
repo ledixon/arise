@@ -3,186 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARISE | Engineering System</title>
+    <title>ARISE | Global Engineering System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
         body { background-color: #020202; color: #fff; font-family: 'Orbitron', sans-serif; height: 100vh; overflow: hidden; }
-        .sidebar { border-right: 1px solid #2e1065; background: rgba(5, 5, 5, 0.95); z-index: 40; }
-        .system-card { background: #0a0a0a; border: 1px solid #1e1b4b; transition: 0.3s; position: relative; }
-        .system-card:hover { border-color: #00d1ff; box-shadow: 0 0 20px rgba(0, 209, 255, 0.2); }
         
-        /* Arise Animation Effect */
-        .arise-glow { animation: arise 1.5s ease-out forwards; }
-        @keyframes arise {
-            0% { box-shadow: 0 0 0px #00d1ff; transform: scale(1); }
-            50% { box-shadow: 0 0 50px #00d1ff; transform: scale(1.05); }
-            100% { box-shadow: 0 0 10px #00d1ff; transform: scale(1); }
+        /* Sidebar & Layout */
+        .sidebar { border-right: 1px solid #2e1065; background: rgba(5, 5, 5, 0.95); }
+        .nav-item { transition: 0.3s; border-left: 3px solid transparent; }
+        .nav-item:hover { background: rgba(139, 92, 246, 0.1); border-left: 3px solid #a855f7; color: #a855f7; }
+
+        /* Icon Glow Effect */
+        .icon-box { transition: all 0.4s ease; filter: grayscale(100%); opacity: 0.5; }
+        .system-card:hover .icon-box { filter: grayscale(0%); opacity: 100%; transform: scale(1.2); text-shadow: 0 0 15px #a855f7; }
+        .system-card:hover { border-color: #a855f7; box-shadow: 0 0 20px rgba(168, 85, 247, 0.2); }
+
+        /* Purple Mist "Arise" Animation */
+        .mist-container { position: relative; overflow: hidden; }
+        .mist {
+            position: absolute; inset: 0; background: radial-gradient(circle, rgba(168,85,247,0.6) 0%, rgba(0,0,0,0) 70%);
+            opacity: 0; pointer-events: none;
+        }
+        .arise-active .mist { animation: purpleMist 2s ease-out forwards; }
+        @keyframes purpleMist {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; transform: scale(1.5); }
         }
 
-        .scanner-line { height: 2px; background: #00d1ff; position: absolute; width: 100%; animation: scan 2s infinite; }
+        .scanner-line { height: 2px; background: #a855f7; position: absolute; width: 100%; animation: scan 2s infinite; }
         @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
         
-        .xp-fill { transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .xp-fill { transition: width 0.8s ease-in-out; }
     </style>
 </head>
-<body class="flex flex-col md:flex-row">
+<body class="flex">
 
-    <aside class="sidebar w-full md:w-72 flex flex-col p-6 hidden md:flex">
-        <div class="mb-10">
-            <h1 class="text-2xl font-black tracking-tighter text-blue-400 italic">ARISE</h1>
-            <p class="text-[9px] text-gray-500 tracking-[0.4em]">RANK: E | USER: LEDIXON</p>
+    <aside class="sidebar w-72 flex flex-col p-6 h-full">
+        <div class="mb-8">
+            <h1 class="text-2xl font-black tracking-tighter text-purple-500 italic">ARISE</h1>
+            <p class="text-[9px] text-gray-500 tracking-[0.4em]">RANK: E | LEDIXON</p>
         </div>
 
-        <nav class="flex-1 space-y-4">
-            <button onclick="location.reload()" class="w-full text-left p-3 text-[10px] tracking-widest text-gray-400 hover:text-white">HOME</button>
-            <button onclick="showLeaderboard()" class="w-full text-left p-3 text-[10px] tracking-widest text-gray-400 hover:text-white">LEADERBOARD</button>
+        <nav class="flex-1 space-y-2">
+            <button onclick="location.reload()" class="nav-item w-full text-left p-3 text-[10px] tracking-widest text-gray-400">HOME</button>
+            <button onclick="startAriseCam()" class="nav-item w-full text-left p-3 text-[10px] tracking-widest text-purple-400 font-bold border-purple-900 border">ARISE CAM</button>
+            <button onclick="showLeaderboard()" class="nav-item w-full text-left p-3 text-[10px] tracking-widest text-gray-400">LEADERBOARD</button>
         </nav>
 
-        <div class="mt-auto pt-6 border-t border-blue-900/30">
-            <div class="flex justify-between text-[9px] mb-2 text-blue-400">
-                <span>SYSTEM XP</span>
+        <div class="mt-auto pt-6 border-t border-purple-900/30">
+            <div class="flex justify-between text-[9px] mb-2 text-purple-400 uppercase tracking-widest">
+                <span>System Mana (XP)</span>
                 <span id="xp-counter">0 / 1000</span>
             </div>
-            <div class="h-1 bg-gray-900 rounded-full overflow-hidden border border-blue-900/20">
-                <div id="xp-bar-fill" class="xp-fill h-full bg-blue-500 w-0 shadow-[0_0_10px_#00d1ff]"></div>
+            <div class="h-1 bg-gray-900 rounded-full overflow-hidden">
+                <div id="xp-bar" class="xp-fill h-full bg-purple-600 w-0 shadow-[0_0_10px_#a855f7]"></div>
             </div>
         </div>
     </aside>
 
-    <div class="flex-1 flex flex-col overflow-hidden">
-        <header class="h-16 border-b border-blue-900/30 flex items-center justify-end px-8 gap-6 bg-black/50">
-            <button class="text-[10px] tracking-widest text-gray-400 hover:text-white">LOG IN</button>
-            <button class="text-[10px] tracking-widest px-4 py-1.5 border border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white transition">SIGN UP</button>
+    <div class="flex-1 flex flex-col">
+        <header class="h-16 border-b border-purple-900/30 flex items-center px-8 justify-between bg-black/50">
+            <input type="text" id="projectSearch" onkeyup="searchProjects()" placeholder="SEARCH ARCHIVES (e.g. 'Bridge', 'Tesla')" 
+                   class="bg-transparent border-none text-[10px] tracking-widest text-purple-300 outline-none w-96">
+            <div class="flex gap-4">
+                <button class="text-[9px] tracking-widest text-gray-500">LOG IN</button>
+                <button class="text-[9px] tracking-widest border border-purple-500 px-3 py-1">SIGN UP</button>
+            </div>
         </header>
 
-        <main id="main-display" class="flex-1 overflow-y-auto p-8 md:p-12">
-            <h2 id="view-title" class="text-4xl font-bold mb-10 tracking-tighter uppercase italic text-blue-100">System Interface</h2>
-            <div id="content-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl">
+        <main id="main-display" class="flex-1 overflow-y-auto p-12">
+            <h2 id="view-title" class="text-3xl font-bold mb-8 tracking-tighter uppercase italic text-purple-100">Engineering Sectors</h2>
+            <div id="content-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 </div>
         </main>
     </div>
 
-    <div id="camera-overlay" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col items-center justify-center">
-        <div class="relative w-full max-w-xl border border-blue-500 shadow-[0_0_50px_rgba(0,209,255,0.3)]">
+    <div id="camera-overlay" class="fixed inset-0 bg-black/98 z-50 hidden flex flex-col items-center justify-center mist-container">
+        <div class="mist"></div>
+        <div id="scan-frame" class="relative w-full max-w-lg border border-purple-500 shadow-[0_0_40px_rgba(168,85,247,0.4)]">
             <div class="scanner-line"></div>
             <video id="webcam" autoplay playsinline class="w-full"></video>
+            <div id="shadow-figure" class="absolute inset-0 bg-purple-900/20 hidden flex items-center justify-center">
+                <span class="text-4xl animate-pulse">👤</span>
+            </div>
         </div>
-        <div id="ai-status" class="mt-6 text-blue-400 text-xs tracking-[0.5em] animate-pulse">SCANNING FOR MANA SIGNATURE...</div>
-        <button onclick="closeCamera()" class="mt-8 px-10 py-2 border border-white text-[10px] tracking-widest hover:bg-white hover:text-black transition">CANCEL SCAN</button>
+        <div id="ai-status" class="mt-6 text-purple-400 text-xs tracking-[0.5em] uppercase">Ready to Arise</div>
+        <button onclick="closeCamera()" class="mt-8 px-10 py-2 border border-white text-[10px] tracking-widest hover:bg-white hover:text-black transition">ABORT</button>
     </div>
 
     <script>
         let currentXP = 0;
-        const projects = {
-            electrical: [
-                {title: "Tesla Coil Build", xp: 150, vid: "tcObzh8QdD4"},
-                {title: "Logic Gates", xp: 50, vid: "gI-qXJKVz4"},
-                {title: "Wireless Power", xp: 100, vid: "2mY65ZzZ28M"}
-            ],
-            mechanical: [
-                {title: "Bayer Process", xp: 200, vid: "1-W1fMvSIsE"},
-                {title: "Hydraulic Force", xp: 120, vid: "YlmEt7S56_M"}
-            ],
-            aerospace: [
-                {title: "Rocket Propulsion", xp: 250, vid: "v_7vD_G0j_k"},
-                {title: "Wing Lift Design", xp: 100, vid: "GjE7umGoer8"}
-            ],
-            mechatronics: [
-                {title: "Robot Arm Control", xp: 180, vid: "uX9m_pE-K1E"},
-                {title: "Neural Interface", xp: 300, vid: "C_m2L3B1k8c"}
-            ]
-        };
+        const allProjects = [
+            {cat: 'electrical', title: 'Tesla Coil', icon: '⚡', url: 'https://youtu.be/tcObzh8QdD4'},
+            {cat: 'mechanical', title: 'Hydraulic Arm', icon: '⚙️', url: 'https://youtu.be/YlmEt7S56_M'},
+            {cat: 'aerospace', title: 'Rocket Nozzle', icon: '🚀', url: 'https://youtu.be/v_7vD_G0j_k'},
+            {cat: 'civil', title: 'Truss Bridge', icon: '🌉', url: 'https://youtu.be/pWf8vV_1C7s'},
+            {cat: 'chemical', title: 'Aluminum Extraction', icon: '🧪', url: 'https://youtu.be/1-W1fMvSIsE'},
+            {cat: 'biomedical', title: 'Prosthetic Hand', icon: '🦾', url: 'https://youtu.be/0pP49H3y8Yk'},
+            {cat: 'industrial', title: 'Assembly Line', icon: '🏭', url: 'https://youtu.be/o1N2XbUvWk0'}
+        ];
 
         function loadHome() {
             const grid = document.getElementById('content-grid');
-            grid.innerHTML = `
-                <div onclick="openCategory('electrical')" class="system-card p-10 cursor-pointer">
-                    <div class="absolute top-4 right-4 text-3xl opacity-20">⚡</div>
-                    <h3 class="text-xl font-bold">ELECTRICAL</h3>
-                </div>
-                <div onclick="openCategory('mechanical')" class="system-card p-10 cursor-pointer">
-                    <div class="absolute top-4 right-4 text-3xl opacity-20">⚙️</div>
-                    <h3 class="text-xl font-bold">MECHANICAL</h3>
-                </div>
-                <div onclick="openCategory('aerospace')" class="system-card p-10 cursor-pointer">
-                    <div class="absolute top-4 right-4 text-3xl opacity-20">🚀</div>
-                    <h3 class="text-xl font-bold">AEROSPACE</h3>
-                </div>
-                <div onclick="openCategory('mechatronics')" class="system-card p-10 cursor-pointer">
-                    <div class="absolute top-4 right-4 text-3xl opacity-20">🤖</div>
-                    <h3 class="text-xl font-bold">MECHATRONICS</h3>
-                </div>
-            `;
+            grid.innerHTML = '';
+            const categories = [...new Set(allProjects.map(p => p.cat))];
+            categories.forEach(cat => {
+                const icon = allProjects.find(p => p.cat === cat).icon;
+                grid.innerHTML += `
+                    <div onclick="openCategory('${cat}')" class="system-card p-10 cursor-pointer border border-purple-900 flex flex-col items-center justify-center">
+                        <div class="icon-box text-5xl mb-4">${icon}</div>
+                        <h3 class="text-sm font-bold tracking-widest uppercase">${cat}</h3>
+                    </div>
+                `;
+            });
         }
 
-        function openCategory(type) {
+        function searchProjects() {
+            const input = document.getElementById('projectSearch').value.toLowerCase();
             const grid = document.getElementById('content-grid');
-            document.getElementById('view-title').innerText = type;
+            const filtered = allProjects.filter(p => p.title.toLowerCase().includes(input));
+            
             grid.innerHTML = '';
-            projects[type].forEach(p => {
+            filtered.forEach(p => {
                 grid.innerHTML += `
-                    <div class="system-card p-4 rounded" id="card-${p.title.replace(/\s+/g, '')}">
-                        <div class="aspect-video mb-4">
-                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/${p.vid}" frameborder="0" allowfullscreen></iframe>
-                        </div>
-                        <h4 class="font-bold uppercase text-sm mb-4">${p.title}</h4>
-                        <div class="flex justify-between items-center border-t border-blue-900/30 pt-4">
-                            <span class="text-[10px] text-blue-400">+${p.xp} XP</span>
-                            <button onclick="startCamera('${p.title}', ${p.xp})" class="text-[9px] border border-blue-500 px-4 py-1.5 hover:bg-blue-500 transition-all">ARISE SCAN</button>
+                    <div class="system-card p-6 border border-purple-500">
+                        <h4 class="font-bold text-xs uppercase mb-4">${p.title}</h4>
+                        <div class="flex justify-between items-center">
+                            <span class="text-[9px] text-purple-400">+100 XP</span>
+                            <a href="${p.url}" target="_blank" onclick="addXP(100)" class="text-[9px] border border-purple-500 px-3 py-1 hover:bg-purple-500">WATCH & ARISE</a>
                         </div>
                     </div>
                 `;
             });
         }
 
-        async function startCamera(projName, xpValue) {
-            const overlay = document.getElementById('camera-overlay');
-            const status = document.getElementById('ai-status');
-            overlay.classList.remove('hidden');
-            
+        async function startAriseCam() {
+            document.getElementById('camera-overlay').classList.remove('hidden');
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
             document.getElementById('webcam').srcObject = stream;
-
-            // FAKE AI OBJECT RECOGNITION LOGIC
+            
             setTimeout(() => {
-                // Here we simulate the AI failing if it just sees a face
-                const isProject = Math.random() > 0.3; // 70% chance to pass if a project is held up
-
-                if (isProject) {
-                    status.innerText = `OBJECT IDENTIFIED: ${projName.toUpperCase()} ARCHIVE VERIFIED.`;
-                    status.style.color = "#00d1ff";
-                    
-                    // Trigger the "Arise" effect on the card
-                    const cardId = `card-${projName.replace(/\s+/g, '')}`;
-                    document.getElementById(cardId).classList.add('arise-glow');
-                    
-                    updateXP(xpValue);
-                } else {
-                    status.innerText = "ERROR: NO PROJECT DETECTED. FACE RECOGNITION ONLY. 0 XP GRANTED.";
-                    status.style.color = "#ff4444";
-                }
+                document.getElementById('ai-status').innerText = "OBJECT DETECTED: BRIDGE COMPONENTS";
+                document.getElementById('camera-overlay').classList.add('arise-active');
+                setTimeout(() => {
+                    document.getElementById('ai-status').innerText = "RECOMMENDED: TRUSS BRIDGE PROJECT";
+                    document.getElementById('projectSearch').value = "Bridge";
+                    searchProjects();
+                }, 2000);
             }, 3000);
         }
 
-        function updateXP(amount) {
-            currentXP += amount;
-            const bar = document.getElementById('xp-bar-fill');
-            const counter = document.getElementById('xp-counter');
-            
-            const percentage = Math.min((currentXP / 1000) * 100, 100);
-            bar.style.width = percentage + "%";
-            counter.innerText = `${currentXP} / 1000`;
-
-            if (currentXP >= 1000) {
-                alert("RANK UP ACHIEVED: RANK D");
-            }
+        function addXP(amount) {
+            currentXP = Math.min(currentXP + amount, 1000);
+            document.getElementById('xp-bar').style.width = (currentXP / 10) + '%';
+            document.getElementById('xp-counter').innerText = `${currentXP} / 1000`;
         }
 
         function closeCamera() {
             const video = document.getElementById('webcam');
             if (video.srcObject) video.srcObject.getTracks().forEach(t => t.stop());
             document.getElementById('camera-overlay').classList.add('hidden');
+            document.getElementById('camera-overlay').classList.remove('arise-active');
+        }
+
+        function openCategory(cat) {
+            document.getElementById('projectSearch').value = cat;
+            searchProjects();
         }
 
         loadHome();
