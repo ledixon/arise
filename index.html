@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARISE | The System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --obsidian: #050505;
+            --mana-purple: #a855f7;
+        }
+        body {
+            background-color: var(--obsidian);
+            color: #e9d5ff;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Bridge for Dropdown */
+        .dropdown-container { position: relative; }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            width: 12rem;
+            padding-top: 12px; /* This is the bridge */
+            z-index: 100;
+        }
+        .dropdown-container:hover .dropdown-menu {
+            display: block;
+        }
+
+        .glass-panel {
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+        }
+
+        /* Rank Badge Styling */
+        .rank-badge {
+            background: linear-gradient(135deg, #2e1065, #7e22ce);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 900;
+            font-size: 0.75rem;
+            border: 1px solid var(--mana-purple);
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen">
+
+    <nav class="h-16 glass-panel flex items-center justify-between px-6 sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <span class="text-3xl font-black text-purple-500 tracking-tighter cursor-pointer uppercase">ARISE</span>
+            <div class="rank-badge tracking-widest">RANK: E</div>
+        </div>
+        
+        <div class="flex items-center gap-6">
+            <div class="dropdown-container">
+                <button class="font-bold tracking-widest text-sm hover:text-purple-400 uppercase">System Settings ▾</button>
+                <div class="dropdown-menu">
+                    <div class="glass-panel rounded-md overflow-hidden shadow-2xl">
+                        <a href="#" class="block px-4 py-3 hover:bg-purple-900/40 text-sm">PROFILE</a>
+                        <a href="#" class="block px-4 py-3 hover:bg-purple-900/40 text-sm">SIGN UP</a>
+                        <a href="#" class="block px-4 py-3 hover:bg-purple-900/40 text-sm border-t border-purple-900/20">LOG OUT</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex flex-1 overflow-hidden">
+        <aside class="w-72 glass-panel border-r border-purple-900/30 flex flex-col p-6 gap-6 overflow-y-auto">
+            <section>
+                <h3 class="text-xs font-bold text-purple-600 tracking-[0.2em] mb-4 uppercase">User Status</h3>
+                <div class="p-4 bg-zinc-950 border border-purple-900/50 rounded-lg">
+                    <p class="text-xs text-gray-500 uppercase">Experience Points (XP)</p>
+                    <p class="text-2xl font-black text-white">1,240 <span class="text-xs text-purple-500">XP</span></p>
+                    <div class="w-full bg-zinc-900 h-1.5 mt-2 rounded-full">
+                        <div class="bg-purple-500 h-full rounded-full" style="width: 45%"></div>
+                    </div>
+                    <p class="text-[10px] text-gray-500 mt-2 italic">Next Rank: D (4 Projects required)</p>
+                </div>
+            </section>
+
+            <section>
+                <h3 class="text-xs font-bold text-purple-600 tracking-[0.2em] mb-4 uppercase">Worldwide Leaderboard</h3>
+                <p class="text-[10px] text-gray-500 mb-3">Season 1 Ends in: 245 Days</p>
+                <div class="flex flex-col gap-3">
+                    <div class="flex items-center justify-between text-sm bg-purple-900/10 p-2 rounded border border-purple-900/20">
+                        <span>1. Sung Jin-Woo</span>
+                        <span class="font-bold text-purple-400">99k XP</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm p-2">
+                        <span>2. Thomas Andre</span>
+                        <span class="font-bold">85k XP</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm p-2">
+                        <span>3. You (Guest)</span>
+                        <span class="font-bold">1.2k XP</span>
+                    </div>
+                </div>
+            </section>
+            
+            <nav class="flex flex-col gap-2 mt-auto">
+                <a href="#" class="p-3 rounded-lg flex items-center gap-4 hover:bg-purple-900/20 text-white font-bold">🏠 HOME</a>
+                <a href="#" class="p-3 rounded-lg flex items-center gap-4 hover:bg-purple-900/20 text-gray-400">🧭 EXPLORE</a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-8 overflow-y-auto">
+            <h2 class="text-sm font-bold text-purple-600 tracking-[0.4em] mb-8 uppercase text-center">Project Chooser</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="glass-panel p-6 rounded-xl hover:border-purple-500 transition cursor-pointer text-center">
+                    <div class="text-3xl mb-2">⚙️</div>
+                    <h3 class="font-bold">MECHANICAL</h3>
+                    <p class="text-xs text-purple-400 mt-1">+150 XP</p>
+                </div>
+                <div class="glass-panel p-6 rounded-xl hover:border-purple-500 transition cursor-pointer text-center">
+                    <div class="text-3xl mb-2">🚀</div>
+                    <h3 class="font-bold">AEROSPACE</h3>
+                    <p class="text-xs text-purple-400 mt-1">+250 XP</p>
+                </div>
+                <div class="glass-panel p-6 rounded-xl hover:border-purple-500 transition cursor-pointer text-center border-purple-500">
+                    <div class="text-3xl mb-2">🤖</div>
+                    <h3 class="font-bold">MECHATRONICS</h3>
+                    <p class="text-xs text-purple-400 mt-1">+200 XP</p>
+                </div>
+                <div class="glass-panel p-6 rounded-xl hover:border-purple-500 transition cursor-pointer text-center">
+                    <div class="text-3xl mb-2">⚡</div>
+                    <h3 class="font-bold">ELECTRICAL</h3>
+                    <p class="text-xs text-purple-400 mt-1">+100 XP</p>
+                </div>
+            </div>
+
+            <section>
+                <h3 class="text-sm font-bold text-purple-600 tracking-[0.2em] mb-6 uppercase">Trending Community Builds</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div class="glass-panel rounded-xl overflow-hidden group cursor-pointer">
+                        <div class="h-48 bg-zinc-900 flex items-center justify-center">
+                             <span class="text-gray-700">Video Preview</span>
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold">DIY Solar Powered Propeller</h4>
+                            <p class="text-xs text-gray-500 mt-1 italic">Built by: MechMaster22</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+</body>
+</html>
